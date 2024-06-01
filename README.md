@@ -130,28 +130,6 @@ FROM titles
 WHERE type = 'Show';
 
 
--- Finding the titles and  directors of movies released on or after 2010
-SELECT DISTINCT t.title, c.name AS director, 
-release_year
-FROM titles AS t
-JOIN credits AS c 
-ON t.id = c.id
-WHERE t.type = 'Movie' 
-AND t.release_year >= 2010 
-AND c.role = 'director'
-ORDER BY release_year DESC;
-
-
--- Which shows on Netflix have the most seasons?
-SELECT title, 
-SUM(seasons) AS total_seasons
-FROM titles 
-WHERE type = 'Show'
-GROUP BY title
-ORDER BY total_seasons DESC
-LIMIT 10;
-
-
 -- Which genres had the most movies? 
 SELECT genres, 
 COUNT(*) AS title_count
@@ -170,19 +148,6 @@ WHERE type = 'Show'
 GROUP BY genres
 ORDER BY title_count DESC
 LIMIT 10;
-
-
--- Titles and Directors of movies with high IMDB scores (>7.5) and high TMDB popularity scores (>80) 
-SELECT t.title, 
-c.name AS director
-FROM titles AS t
-JOIN credits AS c 
-ON t.id = c.id
-WHERE t.type = 'Movie' 
-AND t.imdb_score > 7.5 
-AND t.tmdb_popularity > 80 
-AND c.role = 'director';
-
 
 -- What were the total number of titles for each year? 
 SELECT release_year, 
@@ -203,19 +168,8 @@ AND (t.type = 'Movie' OR t.type = 'Show')
 AND t.imdb_score > 8.0
 AND t.tmdb_score > 8.0
 GROUP BY c.name
-ORDER BY num_highly_rated_titles DESC;
+ORDER BY num_highly_rated_titles DESC limit 10;
 
-
--- Which actors/actresses played the same character in multiple movies or TV shows? 
-SELECT c.name AS actor_actress, 
-c.character, 
-COUNT(DISTINCT t.title) AS num_titles
-FROM credits AS c
-JOIN titles AS t 
-ON c.id = t.id
-WHERE c.role = 'actor' OR c.role = 'actress'
-GROUP BY c.name, c.character
-HAVING COUNT(DISTINCT t.title) > 1;
 
 
 -- What were the top 3 most common genres?
